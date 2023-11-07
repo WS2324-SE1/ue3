@@ -1,11 +1,18 @@
 package org.hbrs.se1.ws23.uebung3.persistence;
 
+import java.io.*;
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
 
     // URL of file, in which the objects are stored
     private String location = "objects.ser";
+
+    private FileOutputStream mFileOutputStream = null;
+    private FileInputStream mFileInputStream = null;
+    private ObjectOutputStream mObjectOutputStream = null;
+    private ObjectInputStream mObjectInputStream = null;
 
     // Backdoor method used only for testing purposes, if the location should be changed in a Unit-Test
     // Example: Location is a directory (Streams do not like directories, so try this out ;-)!
@@ -20,7 +27,25 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * and save.
      */
     public void openConnection() throws PersistenceException {
+        try{
+            mFileOutputStream = new FileOutputStream(location);
+            mFileInputStream = new FileInputStream(location);
+        }
+        catch (FileNotFoundException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "File Stream could not be opened!");
+        }
 
+        try {
+            mObjectOutputStream = new ObjectOutputStream(mFileOutputStream);
+            mObjectInputStream = new ObjectInputStream(mFileInputStream);
+        }
+        catch (IOException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "Object Stream could not be opened!");
+        }
     }
 
     @Override
@@ -28,15 +53,41 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * Method for closing the connections to a stream
      */
     public void closeConnection() throws PersistenceException {
+        try {
+            mObjectOutputStream.close();
+            mObjectInputStream.close();
+        }
+        catch (IOException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "Object Stream could not be closed!");
+        }
 
+        try {
+            mFileOutputStream.close();
+            mFileInputStream.close();
+        }
+        catch (IOException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "File Stream could not be closed!");
+        }
     }
 
     @Override
     /**
      * Method for saving a list of Member-objects to a disk (HDD)
      */
-    public void save(List<E> member) throws PersistenceException  {
-
+    public void save(List<E> member) throws PersistenceException
+    {
+        try {
+            mObjectOutputStream.writeObject(member);
+        }
+        catch (IOException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "Object Stream could not be written!");
+        }
     }
 
     @Override
@@ -46,26 +97,24 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
      * Take also a look at the import statements above ;-!
      */
     public List<E> load() throws PersistenceException  {
-        // Some Coding hints ;-)
 
-        // ObjectInputStream ois = null;
-        // FileInputStream fis = null;
-        // List<...> newListe =  null;
-        //
-        // Initiating the Stream (can also be moved to method openConnection()... ;-)
-        // fis = new FileInputStream( " a location to a file" );
-
-        // Tipp: Use a directory (ends with "/") to implement a negative test case ;-)
-        // ois = new ObjectInputStream(fis);
-
-        // Reading and extracting the list (try .. catch ommitted here)
-        // Object obj = ois.readObject();
-
-        // if (obj instanceof List<?>) {
-        //       newListe = (List) obj;
-        // return newListe
-
-        // and finally close the streams (guess where this could be...?)
-        return null;
+        try {
+            return (List<E>) mObjectInputStream.readObject();
+        }
+        catch (IOException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "Object Stream could not be read!");
+        }
+        catch (ClassNotFoundException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "Object Stream could not be read!");
+        }
+        catch (ClassCastException e)
+        {
+            throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
+                    "Object Stream could not be read!");
+        }
     }
 }

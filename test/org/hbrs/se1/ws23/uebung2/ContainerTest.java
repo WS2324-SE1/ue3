@@ -13,7 +13,7 @@ class ContainerTest {
     @BeforeEach
     void setUp() {
         // Den Container anlegen
-        container = new Container();
+        container = Container.getInstance(true);
     }
 
     @Test
