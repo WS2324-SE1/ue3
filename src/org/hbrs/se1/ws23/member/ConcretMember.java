@@ -1,6 +1,9 @@
 package org.hbrs.se1.ws23.member;
 
-public class ConcretMember implements Member {
+import java.io.Serializable;
+
+public class ConcretMember implements Member, Serializable
+{
 	
 	private Integer id = null;
 	

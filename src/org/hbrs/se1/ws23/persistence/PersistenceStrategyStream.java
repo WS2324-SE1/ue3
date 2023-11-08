@@ -85,7 +85,7 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         catch (IOException e)
         {
             throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
-                    "Object Stream could not be written!");
+                    "Object Stream could not be written! " + e);
         }
     }
 
