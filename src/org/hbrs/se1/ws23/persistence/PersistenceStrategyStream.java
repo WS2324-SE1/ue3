@@ -77,10 +77,10 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
     /**
      * Method for saving a list of Member-objects to a disk (HDD)
      */
-    public void save(List<E> member) throws PersistenceException
+    public void save(List<E> members) throws PersistenceException
     {
         try {
-            mObjectOutputStream.writeObject(member);
+            mObjectOutputStream.writeObject(members);
         }
         catch (IOException e)
         {
@@ -103,17 +103,17 @@ public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {
         catch (IOException e)
         {
             throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
-                    "Object Stream could not be read!");
+                    "Object Stream could not be read!" + e);
         }
         catch (ClassNotFoundException e)
         {
             throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
-                    "Object Stream could not be read!");
+                    "Object Stream could not be read!" + e);
         }
         catch (ClassCastException e)
         {
             throw new PersistenceException(PersistenceException.ExceptionType.ConnectionNotAvailable,
-                    "Object Stream could not be read!");
+                    "Object Stream could not be read!" + e);
         }
     }
 }
