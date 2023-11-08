@@ -1,6 +1,5 @@
-package org.hbrs.se1.ws23.uebung3.persistence;
+package org.hbrs.se1.ws23.persistence;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

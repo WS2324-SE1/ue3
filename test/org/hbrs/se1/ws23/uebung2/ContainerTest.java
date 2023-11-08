@@ -1,6 +1,10 @@
 
 package org.hbrs.se1.ws23.uebung2;
 
+import org.hbrs.se1.ws23.container.Container;
+import org.hbrs.se1.ws23.container.ContainerException;
+import org.hbrs.se1.ws23.member.ConcretMember;
+import org.hbrs.se1.ws23.member.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +23,8 @@ class ContainerTest {
     @Test
     void addAndDeleteMember() {
         // Test-Objekte anlegen
-        Member r1 = new MemberKonkret(12);
-        Member r2 = new MemberKonkret(32);
+        Member r1 = new ConcretMember(12);
+        Member r2 = new ConcretMember(32);
 
         // Testfall 1 - Check auf leeren Container
         assertEquals(0, container.size(),
@@ -66,9 +70,6 @@ class ContainerTest {
 
         container.size(); // Size darf keinen Zustandswechsel auslösen!
         assertEquals(2, container.size(), "Testfall 7 - Pruefung auf Zustand 2");
-
-        container.dump(); // Dump darf keinen Zustandswechsel auslösen!
-        assertEquals(2, container.size(), "Testfall 8 - Pruefung auf Zustand 2");
 
 
         // Testfälle 9 - 10. Zurück auf Zustand 0

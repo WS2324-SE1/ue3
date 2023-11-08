@@ -1,10 +1,10 @@
-package org.hbrs.se1.ws23.uebung2;
+package org.hbrs.se1.ws23.member;
 
-public class MemberKonkret implements Member {
+public class ConcretMember implements Member {
 	
 	private Integer id = null;
 	
-	public MemberKonkret( Integer id ){
+	public ConcretMember(Integer id ){
 		this.id = id;
 	}
 

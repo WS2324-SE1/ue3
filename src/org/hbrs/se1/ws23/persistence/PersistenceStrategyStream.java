@@ -1,7 +1,6 @@
-package org.hbrs.se1.ws23.uebung3.persistence;
+package org.hbrs.se1.ws23.persistence;
 
 import java.io.*;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public class PersistenceStrategyStream<E> implements PersistenceStrategy<E> {

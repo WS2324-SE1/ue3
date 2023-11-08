@@ -1,4 +1,4 @@
-package org.hbrs.se1.ws23.uebung2;
+package org.hbrs.se1.ws23.container;
 
 /**
  * Checked Exception (always subclasses from class Exception)

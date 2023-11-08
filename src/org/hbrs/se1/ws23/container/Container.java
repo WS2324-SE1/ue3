@@ -1,21 +1,18 @@
-package org.hbrs.se1.ws23.uebung2;
+package org.hbrs.se1.ws23.container;
 
-import org.hbrs.se1.ws23.uebung3.persistence.PersistenceException;
-import org.hbrs.se1.ws23.uebung3.persistence.PersistenceStrategy;
+import org.hbrs.se1.ws23.member.Member;
+import org.hbrs.se1.ws23.persistence.PersistenceException;
+import org.hbrs.se1.ws23.persistence.PersistenceStrategy;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
-public class Container
+public class Container<T extends Member>
 {
 
 	private static Container mInstance;
 
-	private PersistenceStrategy<Member> mPersistenceStrategy;
+	private PersistenceStrategy<T> mPersistenceStrategy;
 
 	private Container()
 	{
@@ -40,10 +37,10 @@ public class Container
 		return mInstance;
 	}
 
-	private List<Member> mMembers = new ArrayList<Member>();
+	private List<T> mMembers = new ArrayList<T>();
 
 
-	public void addMember(Member r) throws ContainerException
+	public void addMember(T r) throws ContainerException
 	{
 
 		if (r == null)
@@ -61,10 +58,10 @@ public class Container
 
 	}
 
-	private boolean contains(Member r)
+	private boolean contains(T r)
 	{
 		Integer ID = r.getID();
-		for (Member rec : mMembers)
+		for (T rec : mMembers)
 		{
 			// wichtig: Check auf die Values innerhalb der Integer-Objekte!
 			if (rec.getID().intValue() == ID.intValue())
@@ -79,12 +76,12 @@ public class Container
 
 	public String deleteMember(Integer id)
 	{
-		Member rec = getMember(id);
+		T rec = getMember(id);
 		if (rec == null) return "Member nicht enthalten - ERROR";
 		else
 		{
 			mMembers.remove(rec);
-			return "Member mit der ID " + id + " konnte geloescht werden";
+			return "Member mit der ID " + id + " konnte gelöscht werden";
 		}
 	}
 
@@ -94,19 +91,14 @@ public class Container
 	}
 
 
-	public void dump()
+	public List<T> getCurrentList()
 	{
-		System.out.println("Ausgabe aller Member-Objekte: ");
-
-		for (Member p : mMembers)
-		{
-			System.out.println(p.toString());
-		}
+		return mMembers;
 	}
 
-	private Member getMember(Integer id)
+	private T getMember(Integer id)
 	{
-		for (Member rec : mMembers)
+		for (T rec : mMembers)
 		{
 			if (id == rec.getID().intValue())
 			{
@@ -119,6 +111,11 @@ public class Container
 
 	public void store() throws PersistenceException
 	{
+		if (mPersistenceStrategy == null)
+		{
+			throw new PersistenceException(PersistenceException.ExceptionType.NoStrategyIsSet, "Es ist keine Strategie gesetzt!");
+		}
+
 		mPersistenceStrategy.openConnection();
 
 		mPersistenceStrategy.save(mMembers);
@@ -129,6 +126,11 @@ public class Container
 
 	public void load() throws PersistenceException
 	{
+		if (mPersistenceStrategy == null)
+		{
+			throw new PersistenceException(PersistenceException.ExceptionType.NoStrategyIsSet, "Es ist keine Strategie gesetzt!");
+		}
+
 		mPersistenceStrategy.openConnection();
 
 		mMembers = mPersistenceStrategy.load();
@@ -136,13 +138,13 @@ public class Container
 		mPersistenceStrategy.closeConnection();
 	}
 
-	public PersistenceStrategy<Member> getPersistenceStrategy()
+	public PersistenceStrategy<T> getPersistenceStrategy()
 	{
 		return mPersistenceStrategy;
 	}
 
-	public void setPersistenceStrategy(PersistenceStrategy<Member> mPersistenceStrategy)
+	public void setPersistenceStrategy(PersistenceStrategy<T> persistence_strategy)
 	{
-		this.mPersistenceStrategy = mPersistenceStrategy;
+		this.mPersistenceStrategy = persistence_strategy;
 	}
 }
